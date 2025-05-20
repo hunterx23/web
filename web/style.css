@@ -1,0 +1,91 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+form input, form button {
+  padding: 10px;
+  font-size: 16px;
+  flex: 1;
+  min-width: 200px;
+}
+
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #333;
+  color: #fff;
+}
+
+td, th {
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.actions button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.actions .delete {
+  background: #f44336;
+}
+
+.message-box {
+  text-align: center;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+  display: none;
+}
+
+.message-box.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.message-box.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}

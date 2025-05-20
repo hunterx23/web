@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Educational Appointments</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    form input, form button {
+      padding: 10px;
+      font-size: 16px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #333;
+      color: #fff;
+    }
+
+    td, th {
+      padding: 12px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .actions button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .actions .delete {
+      background: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Educational Platform - Appointments</h1>
+
+    <form id="appointmentForm">
+      <input type="text" id="name" placeholder="Student Name" required />
+      <input type="text" id="subject" placeholder="Subject" required />
+      <input type="datetime-local" id="datetime" required />
+      <input type="hidden" id="appointmentId" />
+      <button type="submit">Add Appointment</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Subject</th>
+          <th>Date & Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="appointmentsList">
+        <!-- Appointments will be loaded here -->
+      </tbody>
+    </table>
+  </div>
+
+    <script>
+    const API_URL = 'https://crudcrud.com/api/230006c4456a4450bae336727f88aa1b/appointments';
+
+    const form = document.getElementById('appointmentForm');
+    const nameInput = document.getElementById('name');
+    const subjectInput = document.getElementById('subject');
+    const datetimeInput = document.getElementById('datetime');
+    const list = document.getElementById('appointmentsList');
+
+    let editingId = null;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const appointment = {
+        name: nameInput.value,
+        subject: subjectInput.value,
+        datetime: datetimeInput.value
+      };
+
+      if (editingId) {
+        await fetch(`${API_URL}/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(appointment)
+        });
+        editingId = null;
+      } else {
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(appointment)
+        });
+      }
+
+      form.reset();
+      loadAppointments();
+    });
+
+    async function loadAppointments() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+
+      list.innerHTML = '';
+      data.forEach(appointment => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${appointment.name}</td>
+          <td>${appointment.subject}</td>
+          <td>${appointment.datetime}</td>
+          <td class="actions">
+            <button onclick="editAppointment('${appointment._id}', '${appointment.name}', '${appointment.subject}', '${appointment.datetime}')">Edit</button>
+            <button class="delete" onclick="deleteAppointment('${appointment._id}')">Delete</button>
+          </td>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function editAppointment(id, name, subject, datetime) {
+      nameInput.value = name;
+      subjectInput.value = subject;
+      datetimeInput.value = datetime;
+      editingId = id;
+    }
+
+    async function deleteAppointment(id) {
+      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      loadAppointments();
+    }
+
+    loadAppointments();
+  </script>
+</body>
+</html>
